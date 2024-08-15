@@ -8,7 +8,7 @@ from django.utils.text import slugify
 def generate_image_filename(instance, filename):
     ext = filename.split('.')[-1]
     hotel_title = slugify(instance.property_info.title)
-    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S_%f")  # %f gives microseconds
+    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S_%f")
     filename = f"{hotel_title}_{timestamp}.{ext}"
     return os.path.join('images', filename)
 
