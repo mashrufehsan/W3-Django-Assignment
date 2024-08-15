@@ -5,12 +5,14 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
+
 def generate_image_filename(instance, filename):
     ext = filename.split('.')[-1]
     hotel_title = slugify(instance.property_info.title)
     timestamp = timezone.now().strftime("%Y%m%d_%H%M%S_%f")
     filename = f"{hotel_title}_{timestamp}.{ext}"
     return os.path.join('images', filename)
+
 
 class Location(models.Model):
     COUNTRY = 'country'
@@ -23,8 +25,10 @@ class Location(models.Model):
     ]
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -34,6 +38,7 @@ class Location(models.Model):
     class Meta:
         db_table = 'location'
         verbose_name_plural = 'Locations'
+
 
 class Amenity(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
@@ -46,6 +51,7 @@ class Amenity(models.Model):
     class Meta:
         db_table = 'amenity'
         verbose_name_plural = 'Amenities'
+
 
 class PropertyInfo(models.Model):
     title = models.CharField(max_length=255)
@@ -62,9 +68,12 @@ class PropertyInfo(models.Model):
         db_table = 'property_info'
         verbose_name_plural = 'Property Info'
 
+
 class Image(models.Model):
-    property_info = models.ForeignKey(PropertyInfo, related_name='images', on_delete=models.CASCADE)
-    img_path = models.ImageField(upload_to=generate_image_filename, max_length=255)
+    property_info = models.ForeignKey(
+        PropertyInfo, related_name='images', on_delete=models.CASCADE)
+    img_path = models.ImageField(
+        upload_to=generate_image_filename, max_length=255)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -80,6 +89,7 @@ class Image(models.Model):
     class Meta:
         db_table = 'image'
         verbose_name_plural = 'Images'
+
 
 @receiver(pre_delete, sender=Image)
 def delete_image_file(sender, instance, **kwargs):
