@@ -23,8 +23,8 @@ class Location(models.Model):
     ]
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -49,7 +49,7 @@ class Amenity(models.Model):
 
 class PropertyInfo(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     locations = models.ManyToManyField(Location, related_name='properties')
     amenities = models.ManyToManyField(Amenity, related_name='properties')
     created_date = models.DateTimeField(default=timezone.now)
