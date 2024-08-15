@@ -10,7 +10,7 @@ class ImageInline(admin.TabularInline):
 
     def image_preview(self, obj):
         if obj.img_path:
-            return format_html('<img src="{}" width="70" height="70" />', obj.img_path.url)
+            return format_html('<img src="{}" width="80" height="80" />', obj.img_path.url)
         return "No Image"
     image_preview.short_description = 'Image Preview'
 
