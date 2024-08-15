@@ -6,15 +6,10 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 def generate_image_filename(instance, filename):
-    # Get the file extension
     ext = filename.split('.')[-1]
-    
-    # Generate the new filename
     hotel_title = slugify(instance.property_info.title)
-    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S_%f")  # %f gives microseconds
     filename = f"{hotel_title}_{timestamp}.{ext}"
-    
-    # Return the full path
     return os.path.join('images', filename)
 
 class Location(models.Model):
