@@ -8,7 +8,7 @@ from .models import PropertyInfo, Image, Location, Amenity
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 1
-    readonly_fields = ['image_preview']
+    readonly_fields = ['image_preview', 'created_date', 'updated_date']
 
     def image_preview(self, obj):
         if obj.img_path:
