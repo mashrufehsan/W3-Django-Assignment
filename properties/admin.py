@@ -12,7 +12,7 @@ class ImageInline(admin.TabularInline):
 
     def image_preview(self, obj):
         if obj.img_path:
-            return format_html('<img src="{}" width="100" height="100" />', obj.img_path.url)
+            return format_html('<img src="{}" width="100" height="100"/>', obj.img_path.url)
         return "No Image"
     image_preview.short_description = 'Image Preview'
 
@@ -38,7 +38,7 @@ class PropertyInfoAdmin(admin.ModelAdmin):
         images = obj.images.all()[:3]
         image_tags = [
             f'<img src="{image.img_path.url}" width="50" height="50" style="margin-right: 5px;"/>' for image in images]
-        more_indicator = '...' if obj.images.count() > 3 else ''
+        more_indicator = '[continued...]' if obj.images.count() > 3 else ''
         return mark_safe(''.join(image_tags) + more_indicator)
     display_images.short_description = 'Images'
 
