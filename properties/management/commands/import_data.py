@@ -12,16 +12,13 @@ class Command(BaseCommand):
         username = input("Enter superadmin username: ")
         password = getpass("Enter superadmin password: ")
         user = authenticate(username=username, password=password)
-
         if user is not None and user.is_superuser:
             self.stdout.write(self.style.SUCCESS('Admin login success'))
             db_config = settings.DATABASES['default']
             self.stdout.write(self.style.SUCCESS(
                 'Using the database configuration from \'.env\' file'))
-
             import_db_name = input(
                 "Enter the name of the database to import from: ")
-
             try:
                 conn = psycopg2.connect(
                     dbname=import_db_name,
@@ -30,7 +27,6 @@ class Command(BaseCommand):
                     host=db_config['HOST'],
                     port=db_config.get('PORT', '5432')
                 )
-
                 with conn.cursor() as cur:
                     cur.execute("""
                     SELECT table_name
@@ -38,12 +34,10 @@ class Command(BaseCommand):
                     WHERE table_schema = 'public'
                     """)
                     tables = cur.fetchall()
-
                 self.stdout.write(self.style.SUCCESS(
                     f"Tables in {import_db_name}:"))
                 for i, table in enumerate(tables, 1):
                     self.stdout.write(self.style.SUCCESS(f"{i}. {table[0]}"))
-
                 while True:
                     try:
                         selection = int(
@@ -59,7 +53,6 @@ class Command(BaseCommand):
                     except ValueError:
                         self.stdout.write(self.style.ERROR(
                             "Invalid input. Please enter a number."))
-
                 conn.close()
 
             except psycopg2.Error as e:
