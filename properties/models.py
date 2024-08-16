@@ -3,14 +3,12 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.text import slugify
 
 
 def generate_image_filename(instance, filename):
     ext = filename.split('.')[-1]
-    hotel_title = slugify(instance.property_info.title)
     timestamp = timezone.now().strftime("%Y%m%d_%H%M%S_%f")
-    filename = f"{hotel_title}_{timestamp}.{ext}"
+    filename = f"{timestamp}.{ext}"
     return os.path.join('images', filename)
 
 
@@ -36,12 +34,13 @@ class Location(models.Model):
         return f"{self.get_type_display()}: {self.name}"
 
     class Meta:
+        unique_together = ('name', 'type')
         db_table = 'location'
         verbose_name_plural = 'Locations'
 
 
 class Amenity(models.Model):
-    name = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, unique=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
