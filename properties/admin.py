@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import PropertyInfo, Image, Location, Amenity
+from django.utils.safestring import mark_safe
 
 
 class ImageInline(admin.TabularInline):
@@ -32,7 +33,11 @@ class PropertyInfoAdmin(admin.ModelAdmin):
     display_amenities.short_description = 'Amenities'
 
     def display_images(self, obj):
-        return ", ".join([image.img_path.name for image in obj.images.all()])
+        images = obj.images.all()[:3]
+        image_tags = [
+            f'<img src="{image.img_path.url}" width="50" height="50" style="margin-right: 5px;"/>' for image in images]
+        more_indicator = '...' if obj.images.count() > 3 else ''
+        return mark_safe(''.join(image_tags) + more_indicator)
     display_images.short_description = 'Images'
 
     def get_form(self, request, obj=None, **kwargs):
