@@ -22,9 +22,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('\nAdmin login success!'))
             db_config = settings.DATABASES['default']
             self.stdout.write(self.style.WARNING(
-                'Using the database configuration from \'.env\' file.\n'))
-            import_db_name = input(
-                "Enter the name of the database to import from: ")
+                'Using the database configuration from \'.env\' file.'))
+            import_db_name = os.getenv('SCRAPY_DB_NAME')
             try:
                 conn = psycopg2.connect(
                     dbname=import_db_name,
