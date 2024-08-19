@@ -78,7 +78,7 @@ class Command(BaseCommand):
                                         continue
 
                                     location, created = Location.objects.get_or_create(
-                                        name=location_name,
+                                        name=selected_table + ' - ' + location_name,
                                         type='city',
                                         defaults={
                                             'latitude': latitude,

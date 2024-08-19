@@ -77,6 +77,7 @@ class AmenityAdmin(admin.ModelAdmin):
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'type', 'created_date', 'updated_date')
     readonly_fields = ['created_date', 'updated_date']
+    search_fields = ['name', 'type']
 
 
 admin.site.register(PropertyInfo, PropertyInfoAdmin)
