@@ -1,5 +1,3 @@
-# import_data.py
-
 from django.core.management.base import BaseCommand
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -21,10 +19,10 @@ class Command(BaseCommand):
         password = getpass("Enter superadmin password: ")
         user = authenticate(username=username, password=password)
         if user is not None and user.is_superuser:
-            self.stdout.write(self.style.SUCCESS('Admin login success'))
+            self.stdout.write(self.style.SUCCESS('\nAdmin login success!'))
             db_config = settings.DATABASES['default']
             self.stdout.write(self.style.WARNING(
-                'Using the database configuration from \'.env\' file'))
+                'Using the database configuration from \'.env\' file.\n'))
             import_db_name = input(
                 "Enter the name of the database to import from: ")
             try:
@@ -43,24 +41,23 @@ class Command(BaseCommand):
                     """)
                     tables = cur.fetchall()
                 self.stdout.write(self.style.SUCCESS(
-                    f"Tables in {import_db_name}:"))
+                    f"\nTables in {import_db_name}:"))
                 for i, table in enumerate(tables, 1):
                     self.stdout.write(self.style.SUCCESS(f"{i}. {table[0]}"))
                 while True:
                     try:
                         selection = int(
-                            input("Enter the number of the table you want to select (e.g. 1): "))
+                            input("\nEnter the number of the table you want to select (e.g. 1): "))
                         if 1 <= selection <= len(tables):
                             selected_table = tables[selection - 1][0]
                             self.stdout.write(self.style.SUCCESS(
-                                f"You selected: {selected_table}"))
+                                f"You selected: {selected_table}."))
 
                             with conn.cursor() as cur:
                                 cur.execute(f"SELECT * FROM {selected_table}")
                                 rows = cur.fetchall()
                                 colnames = [desc[0]
                                             for desc in cur.description]
-
                                 for row in rows:
                                     data = dict(zip(colnames, row))
 
@@ -70,7 +67,6 @@ class Command(BaseCommand):
                                     longitude = data.get('longitude')
                                     img_path = data.get('images')
 
-                                    # Check if the property with the same title and location already exists
                                     existing_property = PropertyInfo.objects.filter(
                                         title=title,
                                         locations__name=location_name
@@ -81,9 +77,8 @@ class Command(BaseCommand):
                                             f"Importing '{title}' skipped. Reason: Already exists."))
                                         continue
 
-                                    # Create or update Location
                                     location, created = Location.objects.get_or_create(
-                                        name=selected_table.capitalize() + ' - ' + location_name,
+                                        name=location_name,
                                         type='city',
                                         defaults={
                                             'latitude': latitude,
@@ -95,13 +90,11 @@ class Command(BaseCommand):
                                         location.longitude = longitude
                                         location.save()
 
-                                    # Create PropertyInfo
                                     property_info = PropertyInfo.objects.create(
                                         title=title,
                                     )
                                     property_info.locations.add(location)
 
-                                    # Handle Image Path
                                     import_images_folder_path = os.getenv(
                                         'IMPORT_IMAGES_FOLDER_PATH')
                                     full_img_path = os.path.join(
@@ -120,7 +113,7 @@ class Command(BaseCommand):
                                     )
 
                                 self.stdout.write(self.style.SUCCESS(
-                                    f"Data imported successfully for all rows of {selected_table}"))
+                                    f"Data import completed."))
 
                             break
                         else:
