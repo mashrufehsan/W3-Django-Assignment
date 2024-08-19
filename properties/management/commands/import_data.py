@@ -1,3 +1,5 @@
+# import_data.py
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -53,17 +55,15 @@ class Command(BaseCommand):
                             self.stdout.write(self.style.SUCCESS(
                                 f"You selected: {selected_table}"))
 
-                            # Add this part to fetch the first row and import data
                             with conn.cursor() as cur:
-                                cur.execute(
-                                    f"SELECT * FROM {selected_table} LIMIT 1")
-                                row = cur.fetchone()
-                                if row:
-                                    colnames = [desc[0]
-                                                for desc in cur.description]
+                                cur.execute(f"SELECT * FROM {selected_table}")
+                                rows = cur.fetchall()
+                                colnames = [desc[0]
+                                            for desc in cur.description]
+
+                                for row in rows:
                                     data = dict(zip(colnames, row))
 
-                                    # Extract data from the row
                                     title = data.get('title')
                                     location_name = data.get('location')
                                     latitude = data.get('latitude')
@@ -96,27 +96,20 @@ class Command(BaseCommand):
                                     full_img_path = os.path.join(
                                         import_images_folder_path, img_path)
 
-                                    # Generate new image filename
                                     new_img_filename = generate_image_filename(
                                         None, os.path.basename(full_img_path))
                                     new_img_path = os.path.join(
                                         settings.MEDIA_ROOT, new_img_filename)
 
-                                    # Copy the image to the new path
                                     shutil.copy(full_img_path, new_img_path)
 
-                                    # Create Image
                                     Image.objects.create(
                                         property_info=property_info,
                                         img_path=new_img_filename,
                                     )
 
-                                    self.stdout.write(self.style.SUCCESS(
-                                        f"Data imported successfully for the first row of {selected_table}"))
-
-                                else:
-                                    self.stdout.write(self.style.ERROR(
-                                        f"No data found in table {selected_table}"))
+                                self.stdout.write(self.style.SUCCESS(
+                                    f"Data imported successfully for all rows of {selected_table}"))
 
                             break
                         else:
