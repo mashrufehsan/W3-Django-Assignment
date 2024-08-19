@@ -23,7 +23,7 @@ class Command(BaseCommand):
         if user is not None and user.is_superuser:
             self.stdout.write(self.style.SUCCESS('Admin login success'))
             db_config = settings.DATABASES['default']
-            self.stdout.write(self.style.ERROR(
+            self.stdout.write(self.style.WARNING(
                 'Using the database configuration from \'.env\' file'))
             import_db_name = input(
                 "Enter the name of the database to import from: ")
@@ -70,9 +70,20 @@ class Command(BaseCommand):
                                     longitude = data.get('longitude')
                                     img_path = data.get('images')
 
+                                    # Check if the property with the same title and location already exists
+                                    existing_property = PropertyInfo.objects.filter(
+                                        title=title,
+                                        locations__name=location_name
+                                    ).exists()
+
+                                    if existing_property:
+                                        self.stdout.write(self.style.WARNING(
+                                            f"Importing '{title}' skipped. Reason: Already exists."))
+                                        continue
+
                                     # Create or update Location
                                     location, created = Location.objects.get_or_create(
-                                        name=location_name,
+                                        name=selected_table.capitalize() + ' - ' + location_name,
                                         type='city',
                                         defaults={
                                             'latitude': latitude,
