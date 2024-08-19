@@ -1,23 +1,27 @@
 
-# Property Information Management Django Application
+# Property Information Management Django Application #
 
 This Django application is designed to store and manage property information using the Django admin interface. It includes models for properties, images, locations, and amenities. The application uses PostgreSQL as the database and enables CRUD operations for all models while maintaining their relationships. Additionally, it provides a CLI application to migrate data from a Scrapy project database to Django.
 
 
-## Features
+## Features ##
 
 - **Django Admin Interface:** Manage property information with proper authentication.
 - **PostgreSQL Database:** Use PostgreSQL for data storage.
 - **Django ORM:** Use Django ORM for database interactions.
 - **Data Migration:** CLI tool to migrate data from a Scrapy project database.
 
-## Installation
+## Index ##
+- 👆🏼 [Installation](#Installation "Go to: Installation")
+- 👆🏼 [Using the CLI application](#Using-the-CLI-application "Go to: Using the CLI application")
 
-### Prerequisites
+## Installation ##
+
+### Prerequisites ###
 - Python
 - PostgreSQL
 
-### Steps
+### Steps ###
 
 1. **Clone and navigate to the the Repository.**
     ```bash
@@ -61,3 +65,5 @@ This Django application is designed to store and manage property information usi
     python manage.py runserver
     ```
 
+## Using the CLI application ##
+Continuing
