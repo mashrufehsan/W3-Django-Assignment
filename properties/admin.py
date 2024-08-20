@@ -25,7 +25,7 @@ class PropertyInfoAdmin(admin.ModelAdmin):
     search_fields = ['title', 'description', 'locations__name']
     filter_horizontal = ['amenities', 'locations']
     readonly_fields = ['created_date', 'updated_date']
-    list_filter = ['amenities', 'created_date', 'updated_date', 'locations']
+    list_filter = ['amenities', 'created_date', 'updated_date']
 
     def display_locations(self, obj):
         return ", ".join([f"{location.get_type_display()}: {location.name}" for location in obj.locations.all()])
