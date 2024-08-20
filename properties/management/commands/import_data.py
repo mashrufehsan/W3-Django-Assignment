@@ -66,16 +66,6 @@ class Command(BaseCommand):
                                     longitude = data.get('longitude')
                                     img_path = data.get('images')
 
-                                    existing_property = PropertyInfo.objects.filter(
-                                        title=title,
-                                        locations__name=location_name
-                                    ).exists()
-
-                                    if existing_property:
-                                        self.stdout.write(self.style.WARNING(
-                                            f"Importing '{title}' skipped. Reason: Already exists."))
-                                        continue
-
                                     location, created = Location.objects.get_or_create(
                                         name=selected_table.capitalize() + ' - ' + location_name,
                                         type='city',
@@ -88,6 +78,14 @@ class Command(BaseCommand):
                                         location.latitude = latitude
                                         location.longitude = longitude
                                         location.save()
+
+                                    existing_property = PropertyInfo.objects.filter(
+                                        title=title, locations=location).first()
+
+                                    if existing_property:
+                                        self.stdout.write(self.style.WARNING(
+                                            f"Import skipped for {title}. Reason: Already exists with location {location.name}."))
+                                        continue
 
                                     property_info = PropertyInfo.objects.create(
                                         title=title,
