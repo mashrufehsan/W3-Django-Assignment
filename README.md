@@ -90,7 +90,6 @@ This CLI application imports `title`, `location`, `latitude`, `longitude` and `i
         - On Windows:
             ```bash
             cd
-            echo %cd%
             ```
             Alternatively, you can copy the path directly from the File Explorer address bar.
 
