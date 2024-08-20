@@ -80,7 +80,8 @@ class AmenityAdmin(admin.ModelAdmin):
 
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'type', 'created_date', 'updated_date')
+    list_display = ('name', 'type', 'latitude',
+                    'longitude', 'created_date', 'updated_date')
     readonly_fields = ['created_date', 'updated_date']
     search_fields = ['name', 'type']
     list_filter = ['type', 'created_date', 'updated_date']

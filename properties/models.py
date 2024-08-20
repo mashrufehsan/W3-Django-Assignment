@@ -12,7 +12,20 @@ def generate_image_filename(instance, filename):
     return os.path.join('images', filename)
 
 
-class Location(models.Model):
+class create_update_date(models.Model):
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.updated_date = timezone.now()
+        super().save(*args, **kwargs)
+
+
+class Location(create_update_date, models.Model):
     COUNTRY = 'country'
     STATE = 'state'
     CITY = 'city'
@@ -27,8 +40,6 @@ class Location(models.Model):
         max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.get_type_display()}: {self.name}"
@@ -39,10 +50,8 @@ class Location(models.Model):
         verbose_name_plural = 'Locations'
 
 
-class Amenity(models.Model):
+class Amenity(create_update_date, models.Model):
     name = models.CharField(max_length=255, unique=True)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -52,13 +61,11 @@ class Amenity(models.Model):
         verbose_name_plural = 'Amenities'
 
 
-class PropertyInfo(models.Model):
+class PropertyInfo(create_update_date, models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     locations = models.ManyToManyField(Location, related_name='properties')
     amenities = models.ManyToManyField(Amenity, related_name='properties')
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -68,22 +75,16 @@ class PropertyInfo(models.Model):
         verbose_name_plural = 'Property Info'
 
 
-class Image(models.Model):
+class Image(create_update_date, models.Model):
     property_info = models.ForeignKey(
         PropertyInfo, related_name='images', on_delete=models.CASCADE)
     img_path = models.ImageField(
         upload_to=generate_image_filename, max_length=255)
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.img_path.name
 
     def save(self, *args, **kwargs):
-        if self.pk:
-            self.updated_date = timezone.now()
-        else:
-            self.updated_date = None
         super(Image, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
