@@ -48,10 +48,14 @@ This Django application is designed to store and manage property information usi
 5. **Configure environment variables.**
 
     Copy the .env.sample file to .env and fill in the required database configuration.
-
-    ```bash
-    cp .env.sample .env
-    ```
+    - On macOS/Linux:
+        ```bash
+        cp .env.sample .env
+        ```
+    - On windows:
+        ```bash
+        copy .env.sample .env
+        ```
     Update the .env file with your PostgreSQL database credentials.
 6. **Run Migrations**
     ```bash
