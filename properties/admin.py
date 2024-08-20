@@ -22,9 +22,10 @@ class PropertyInfoAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
     list_display = ('title', 'description', 'created_date', 'updated_date',
                     'display_locations', 'display_amenities', 'display_images')
-    search_fields = ('title', 'description')
-    filter_horizontal = ('amenities', 'locations',)
+    search_fields = ['title', 'description']
+    filter_horizontal = ['amenities', 'locations']
     readonly_fields = ['created_date', 'updated_date']
+    list_filter = ['amenities', 'created_date', 'updated_date', 'locations']
 
     def display_locations(self, obj):
         return ", ".join([f"{location.get_type_display()}: {location.name}" for location in obj.locations.all()])
@@ -52,6 +53,8 @@ class ImageAdmin(admin.ModelAdmin):
     list_display = ('img_path', 'image_preview', 'property_info_title',
                     'change_link', 'created_date', 'updated_date')
     readonly_fields = ['image_preview', 'created_date', 'updated_date']
+    search_fields = ['property_info__title']
+    list_filter = ['created_date', 'updated_date']
 
     def image_preview(self, obj):
         if obj.img_path:
@@ -72,12 +75,15 @@ class ImageAdmin(admin.ModelAdmin):
 class AmenityAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_date', 'updated_date')
     readonly_fields = ['created_date', 'updated_date']
+    search_fields = ['name']
+    list_filter = ['created_date', 'updated_date']
 
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'type', 'created_date', 'updated_date')
     readonly_fields = ['created_date', 'updated_date']
     search_fields = ['name', 'type']
+    list_filter = ['type', 'created_date', 'updated_date']
 
 
 admin.site.register(PropertyInfo, PropertyInfoAdmin)

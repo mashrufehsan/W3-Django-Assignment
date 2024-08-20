@@ -28,7 +28,7 @@ class Location(models.Model):
     longitude = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True)
     created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(auto_now=True)
+    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.get_type_display()}: {self.name}"
@@ -42,7 +42,7 @@ class Location(models.Model):
 class Amenity(models.Model):
     name = models.CharField(max_length=255, unique=True)
     created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(auto_now=True)
+    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -58,7 +58,7 @@ class PropertyInfo(models.Model):
     locations = models.ManyToManyField(Location, related_name='properties')
     amenities = models.ManyToManyField(Amenity, related_name='properties')
     created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(auto_now=True)
+    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -74,10 +74,17 @@ class Image(models.Model):
     img_path = models.ImageField(
         upload_to=generate_image_filename, max_length=255)
     created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(auto_now=True)
+    updated_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.img_path.name
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.updated_date = timezone.now()
+        else:
+            self.updated_date = None
+        super(Image, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.img_path:
