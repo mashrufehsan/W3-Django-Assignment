@@ -77,7 +77,7 @@ class Command(BaseCommand):
                                         continue
 
                                     location, created = Location.objects.get_or_create(
-                                        name=selected_table + ' - ' + location_name,
+                                        name=selected_table.capitalize() + ' - ' + location_name,
                                         type='city',
                                         defaults={
                                             'latitude': latitude,
@@ -103,6 +103,9 @@ class Command(BaseCommand):
                                         None, os.path.basename(full_img_path))
                                     new_img_path = os.path.join(
                                         settings.MEDIA_ROOT, new_img_filename)
+
+                                    os.makedirs(os.path.dirname(
+                                        new_img_path), exist_ok=True)
 
                                     shutil.copy(full_img_path, new_img_path)
 
