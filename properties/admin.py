@@ -22,7 +22,7 @@ class PropertyInfoAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
     list_display = ('title', 'description', 'created_date', 'updated_date',
                     'display_locations', 'display_amenities', 'display_images')
-    search_fields = ['title', 'description']
+    search_fields = ['title', 'description', 'locations__name']
     filter_horizontal = ['amenities', 'locations']
     readonly_fields = ['created_date', 'updated_date']
     list_filter = ['amenities', 'created_date', 'updated_date', 'locations']
